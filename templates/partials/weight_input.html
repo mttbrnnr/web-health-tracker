@@ -1,0 +1,6 @@
+{{define "weight_input"}}
+<input type="number" id="weight-input" name="weight_kg"
+       placeholder="Weight (kg)" step="0.1"
+       {{if .WeightValue}}value="{{.WeightValue}}"{{end}}
+       hx-trigger="blur" hx-post="/day/{{.Date}}/weight" hx-target="#weight-input" hx-swap="outerHTML">
+{{end}}

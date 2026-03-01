@@ -1,0 +1,6 @@
+{{define "day_type_select"}}
+<select id="day-type-select" name="day_type" hx-trigger="change" hx-post="/day/{{.Date}}/type" hx-target="#day-type-select" hx-swap="outerHTML">
+    <option value="rest" {{if eq .DayType "rest"}}selected{{end}}>Rest Day</option>
+    <option value="workout" {{if eq .DayType "workout"}}selected{{end}}>Workout Day</option>
+</select>
+{{end}}

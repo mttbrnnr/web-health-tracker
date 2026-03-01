@@ -1,0 +1,47 @@
+{{define "meal_section"}}
+<article id="{{.MealType}}-section">
+    <header>
+        <hgroup>
+            <h3>{{.DisplayName}}</h3>
+            <p>{{if .HasSavedMeals}}{{printf "%.0f" .TotalCalories}} kcal | {{printf "%.0f" .TotalProtein}}g protein{{else}}&mdash;{{end}}</p>
+        </hgroup>
+    </header>
+    <form hx-post="/meals/{{.MealType}}/save?date={{.Date}}" hx-target="#{{.MealType}}-section" hx-swap="outerHTML">
+        <fieldset>
+            {{range .Foods}}
+            <label>
+                <input type="checkbox" name="food_ids" value="{{.Food.ID}}" {{if .Checked}}checked{{end}}>
+                {{.Food.Name}} ({{printf "%.0f" .Food.CaloriesPerServing}} kcal / {{printf "%.0f" .Food.ProteinPerServing}}g)
+            </label>
+            {{end}}
+            <div id="{{.MealType}}-custom-foods">
+            {{range .CustomFoods}}
+            <label>
+                <input type="checkbox" name="custom_food_ids" value="{{.CustomFood.ID}}" {{if .Checked}}checked{{end}}>
+                {{.CustomFood.Name}}{{if .CustomFood.Description}} ({{.CustomFood.Description}}){{end}}
+            </label>
+            {{end}}
+            </div>
+        </fieldset>
+        <details>
+            <summary>+ Add custom food</summary>
+            <fieldset>
+                <input type="text" id="{{.MealType}}-custom-name" name="custom_name" placeholder="Food name" required>
+                <input type="text" id="{{.MealType}}-custom-desc" name="custom_description" placeholder="Description/portion (optional)">
+                <button type="button"
+                        hx-post="/foods/custom"
+                        hx-target="#{{.MealType}}-custom-foods"
+                        hx-swap="beforeend"
+                        hx-include="#{{.MealType}}-custom-name, #{{.MealType}}-custom-desc"
+                        hx-vals='{"meal_type": "{{.MealType}}", "date": "{{.Date}}"}'>
+                    Add
+                </button>
+            </fieldset>
+        </details>
+        <footer>
+            <button type="submit">Save {{.DisplayName}}</button>
+            <button type="button" hx-post="/meals/{{.MealType}}/yesterday?date={{.Date}}" hx-target="#{{.MealType}}-section" hx-swap="outerHTML">Same as Yesterday</button>
+        </footer>
+    </form>
+</article>
+{{end}}

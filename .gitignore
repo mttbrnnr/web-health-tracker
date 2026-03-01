@@ -1,0 +1,11 @@
+# Binaries (root level only)
+/health-tracker
+/server
+
+# Database
+data/
+
+# IDE
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,14 @@
+{{define "day_totals"}}
+<footer id="day-totals" hx-swap-oob="true">
+    <hr>
+    <section>
+        <hgroup>
+            <h4>Today's Total</h4>
+            <p>
+                <strong>{{printf "%.0f" .Calories}} kcal</strong> |
+                <strong>{{printf "%.0f" .Protein}}g protein</strong>
+            </p>
+        </hgroup>
+    </section>
+</footer>
+{{end}}

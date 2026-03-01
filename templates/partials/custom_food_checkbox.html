@@ -1,0 +1,6 @@
+{{define "custom_food_checkbox"}}
+<label>
+    <input type="checkbox" name="custom_food_ids" value="{{.CustomFood.ID}}" {{if .Checked}}checked{{end}}>
+    {{.CustomFood.Name}}{{if .CustomFood.Description}} ({{.CustomFood.Description}}){{end}}
+</label>
+{{end}}
