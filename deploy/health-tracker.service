@@ -1,0 +1,20 @@
+[Unit]
+Description=Health Tracker Web App
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/opt/health-tracker
+ExecStart=/opt/health-tracker/health-tracker
+Restart=on-failure
+RestartSec=5
+
+# Environment variables
+Environment=PORT=3000
+Environment=DATABASE_PATH=/opt/health-tracker/data/food-tracker.db
+Environment=OBSIDIAN_VAULT_PATH=/home/pi/obsidian-vault
+
+[Install]
+WantedBy=multi-user.target
