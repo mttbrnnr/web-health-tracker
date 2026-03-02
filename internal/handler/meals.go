@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 
 	"web-health-tracker/internal/db"
+	"web-health-tracker/internal/export"
 	"web-health-tracker/internal/models"
 )
 
@@ -67,6 +69,13 @@ func SaveMeal(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Export to Obsidian (async, don't block response)
+	go func() {
+		if err := export.ExportDayToObsidian(database, dateStr); err != nil {
+			log.Printf("export to obsidian: %v", err)
+		}
+	}()
+
 	// Render the response
 	renderMealResponse(w, dayLog, mealType, dateStr)
 }
@@ -106,6 +115,13 @@ func SameAsYesterday(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Export to Obsidian (async, don't block response)
+	go func() {
+		if err := export.ExportDayToObsidian(database, dateStr); err != nil {
+			log.Printf("export to obsidian: %v", err)
+		}
+	}()
 
 	// Render the response
 	renderMealResponse(w, dayLog, mealType, dateStr)
@@ -257,6 +273,13 @@ func AddCustomFood(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	// Export to Obsidian (async, don't block response)
+	go func() {
+		if err := export.ExportDayToObsidian(database, dateStr); err != nil {
+			log.Printf("export to obsidian: %v", err)
+		}
+	}()
 
 	// Get the created custom food to render
 	customFood, err := db.GetCustomFood(database, customFoodID)

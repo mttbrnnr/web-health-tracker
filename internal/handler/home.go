@@ -2,21 +2,17 @@ package handler
 
 import (
 	"html/template"
+	"io/fs"
 	"net/http"
 	"time"
 )
 
 var templates *template.Template
 
-// InitTemplates parses all templates from the templates directory.
-func InitTemplates() error {
+// InitTemplates parses all templates from the embedded filesystem.
+func InitTemplates(fsys fs.FS) error {
 	var err error
-	templates, err = template.ParseGlob("templates/*.html")
-	if err != nil {
-		return err
-	}
-	// Parse partials
-	templates, err = templates.ParseGlob("templates/partials/*.html")
+	templates, err = template.ParseFS(fsys, "templates/*.html", "templates/partials/*.html")
 	return err
 }
 

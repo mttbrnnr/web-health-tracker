@@ -2,6 +2,7 @@ package handler
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -10,6 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 
 	"web-health-tracker/internal/db"
+	"web-health-tracker/internal/export"
 	"web-health-tracker/internal/models"
 )
 
@@ -249,6 +251,13 @@ func UpdateWeight(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+
+		// Export to Obsidian (async, don't block response)
+		go func() {
+			if err := export.ExportDayToObsidian(database, dateStr); err != nil {
+				log.Printf("export to obsidian: %v", err)
+			}
+		}()
 	}
 
 	// Render updated weight input

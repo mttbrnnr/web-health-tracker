@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 
 	"web-health-tracker/internal/db"
 	"web-health-tracker/internal/handler"
+	"web-health-tracker/web"
 )
 
 func main() {
@@ -29,7 +31,7 @@ func main() {
 	}
 
 	// Initialize templates
-	if err := handler.InitTemplates(); err != nil {
+	if err := handler.InitTemplates(web.Templates); err != nil {
 		log.Fatalf("Failed to initialize templates: %v", err)
 	}
 
@@ -41,8 +43,9 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 
-	// Static files
-	fileServer := http.FileServer(http.Dir("./static"))
+	// Static files (embedded)
+	staticFS, _ := fs.Sub(web.Static, "static")
+	fileServer := http.FileServer(http.FS(staticFS))
 	r.Handle("/static/*", http.StripPrefix("/static/", fileServer))
 
 	// Routes
